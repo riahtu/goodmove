@@ -1,0 +1,21 @@
+<div class="row">
+    <div class="col-md-6">
+        <span>Speed</span>
+    </div>
+    <div class="col-md-6">
+        {{speed}}
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">Distance</div>
+    <div class="col-md-6">{{dist}}</div>
+</div>
+<div class="row">
+    <div class="col-md-6">Time</div>
+    <div class="col-md-6">{{time | timer}}</div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <button class="btn btn-block" ng-click="toggleState()">Stop</button>
+    </div>
+</div>

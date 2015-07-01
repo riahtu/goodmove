@@ -50,4 +50,38 @@ angular.module('gmServices', [])
         }
     };
     return service;
+})
+.service('timer', function ($rootScope) {
+    var ticks, id, state;
+    function every() {
+        id = setTimeout(function () {
+            ticks++;
+            $rootScope.$broadcast('timer.tick', ticks);
+            every();
+        }, 1000);
+    }
+    return {
+        start: function () {
+            ticks = 0;
+            state = 'started';
+            every();
+        },
+        getTicks: function () {
+            return ticks;
+        },
+        stop: function () {
+            clearTimeout(id);
+            state = 'stopped';
+            id = null;
+        },
+        pause: function () {
+            if (state !== 'paused') {
+                clearTimeout(id);
+                state = 'paused';
+            } else {
+                every();
+                state = 'started';
+            }
+        }
+    };
 });

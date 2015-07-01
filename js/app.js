@@ -21,7 +21,7 @@
                     redirectTo: '/main'
                 });
     }])
-    .filter('timer', function () {
+    .filter('fmtTime', function () {
         return function (val) {
             val = val || 0;
             var sec = val % 60, 

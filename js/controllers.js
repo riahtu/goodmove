@@ -6,20 +6,18 @@ angular.module('gmControllers', [])
         $location.path('/measure');
     };
 })
-.controller('MeasureCtrl', function ($scope, $interval) {
-    var timer;
-    $scope.time = 0;
-    $scope.dist = 0;
-    $scope.speed = 0;
-    timer = $interval(function () {
-        $scope.time++;
-    }, 1000);
-    $scope.$on('$destroy', function () {
-        $interval.cancel(timer);
-        timer = null;
+.controller('MeasureCtrl', function ($scope, timer) {
+    timer.start();
+    $scope.running = true;
+    $scope.$on('timer.tick', function (event, ticks) {
+        $scope.ticks = ticks;
+        $scope.$digest();
     });
     $scope.toggleState = function () {
-        
+        $scope.running = !$scope.running;
+        timer.pause();
     };
+    $scope.$on('$destroy', function () {
+        timer.stop();
+    });
 });
-

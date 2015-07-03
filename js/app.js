@@ -25,7 +25,7 @@
         return function (val) {
             val = val || 0;
             var sec = val % 60, 
-                min = (val / 60) | 0,
+                min = ((val / 60) | 0) % 60,
                 hour = (val / 3600) | 0;
             return ('0' + hour).slice(-2) + ':' + ('0' + min).slice(-2) + 
                         ':' + ('0' + sec).slice(-2);

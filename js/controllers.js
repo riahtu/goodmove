@@ -9,6 +9,8 @@ angular.module('gmControllers', [])
 .controller('MeasureCtrl', function ($scope, timer) {
     timer.start();
     $scope.running = true;
+    $scope.speed = 0;
+    $scope.dist = 0;
     $scope.$on('timer.tick', function (event, ticks) {
         $scope.ticks = ticks;
         $scope.$digest();

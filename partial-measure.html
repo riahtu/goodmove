@@ -1,21 +1,31 @@
-<div class="row">
-    <div class="col-md-6">
-        <span>Speed</span>
+<div class="container-fluid">
+    <div class="row row-speed">
+        <div class="col-xs-2 col-sm-4 col-md-3 col-lg-2 title">
+            <h1><span class="glyphicon glyphicon-dashboard"></span> <small class="hidden-xs">Speed</small></h1>
+        </div>
+        <div class="col-xs-10 col-sm-8 col-md-9 col-lg-10 value">
+            <h2>{{speed}} <small>km/h</small></h2>
+        </div>
     </div>
-    <div class="col-md-6">
-        {{speed}}
+    <div class="row row-dist">
+        <div class="col-xs-2 col-sm-4 col-md-3 col-lg-2 title">
+            <h1><span class="glyphicon glyphicon-road"></span> <small class="hidden-xs">Distance</small></h1>
+        </div>
+        <div class="col-xs-10 col-sm-8 col-md-9 col-lg-10 value">
+            <h2>{{dist}} <small>km</small></h2>
+        </div>
     </div>
-</div>
-<div class="row">
-    <div class="col-md-6">Distance</div>
-    <div class="col-md-6">{{dist}}</div>
-</div>
-<div class="row">
-    <div class="col-md-6">Time</div>
-    <div class="col-md-6">{{ ticks | fmtTime }}</div>
-</div>
-<div class="row">
-    <div class="col-md-12">
-        <button class="btn btn-block" ng-click="toggleState()">Stop</button>
+    <div class="row row-time">
+        <div class="col-xs-2 col-sm-4 col-md-3 col-lg-2 title">
+            <h1><span class="glyphicon glyphicon-time"></span> <small class="hidden-xs">Time</small></h1>
+        </div>
+        <div class="col-xs-10 col-sm-8 col-md-9 col-lg-10 value">
+            <h2>{{ ticks | fmtTime }}</h2>
+        </div>
     </div>
+    <div class="row">
+        <div class="col-md-12">
+            <button class="btn btn-block" ng-click="toggleState()">Stop</button>
+        </div>
+    </div>    
 </div>

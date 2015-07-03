@@ -84,4 +84,70 @@ angular.module('gmServices', [])
             }
         }
     };
+})
+.service('tracker', function ($rootScope) {
+    var tracker = {
+        start: function () {
+            this.threshold = 5000;
+            this.paused = false;
+            this.positions = [];
+            this.distance = 0;
+            this.lastTime = 0;
+        },
+        pause: function (paused) {
+            this.paused = paused;
+        },
+        stop: function () {
+    
+        },
+        track: function (pos) {
+            if (this.paused) {
+                return;
+            }
+            this.positions.push({
+                lt: pos.coords.latitude,
+                ln: pos.coords.longitude,
+                t: pos.timestamp,
+                d: 0,
+                s: 0
+            });
+            if (this.positions.length > 1) {
+                var t = pos.timestamp - this.lastTime;
+                if (t > this.options.threshold) {
+                    var len = this.positions.length,
+                        pos1 = this.positions[len - 2],
+                        pos2 = this.positions[len - 1],
+                        d = this.calcDistance(pos1.coords, pos2.coords),
+                        speed = (d * 1000.0) / (t / 1000.0);
+                    this.distance += d;
+                    pos2.d = d;
+                    pos2.speed = speed;
+                    $rootScope.$broadcast('tracker.change', {
+                        speed: speed,
+                        distance: tracker.distance,
+                        moved: d
+                    });
+                }
+            }
+            this.lastTime = pos.timestamp;
+        },
+        calcDistance: function (coords1, coords2) {
+            var toRad = function (num) {
+                    return num * Math.PI / 180.0;
+                },
+                R = 6371,
+                dLat = toRad(coords2.latitude - coords1.latitude),
+                dLon = toRad(coords2.longitude - coords1.longitude),
+                a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                    Math.cos(toRad(coords1.latitude)) * Math.cos(toRad(coords2.latitude)) *
+                    Math.sin(dLon / 2) * Math.sin(dLon / 2),
+                c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)),
+                d = R * c;
+            return d;
+        }
+    };
+    $rootScope.$on('locator.pos', function (ev, pos) {
+        tracker.track(pos);
+    });
+    return tracker;
 });

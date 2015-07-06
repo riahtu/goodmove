@@ -117,8 +117,8 @@ angular.module('gmServices', [])
                     var len = this.positions.length,
                         pos1 = this.positions[len - 2],
                         pos2 = this.positions[len - 1],
-                        d = this.calcDistance(pos1.coords, pos2.coords),
-                        speed = (d * 1000.0) / (t / 1000.0);
+                        d = this.calcDistance(pos1, pos2),
+                        speed = d / t;
                     this.distance += d;
                     pos2.d = d;
                     pos2.speed = speed;
@@ -136,10 +136,10 @@ angular.module('gmServices', [])
                     return num * Math.PI / 180.0;
                 },
                 R = 6371,
-                dLat = toRad(coords2.latitude - coords1.latitude),
-                dLon = toRad(coords2.longitude - coords1.longitude),
+                dLat = toRad(coords2.lt - coords1.lt),
+                dLon = toRad(coords2.ln - coords1.ln),
                 a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                    Math.cos(toRad(coords1.latitude)) * Math.cos(toRad(coords2.latitude)) *
+                    Math.cos(toRad(coords1.lt)) * Math.cos(toRad(coords2.lt)) *
                     Math.sin(dLon / 2) * Math.sin(dLon / 2),
                 c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)),
                 d = R * c;

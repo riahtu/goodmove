@@ -113,7 +113,7 @@ angular.module('gmServices', [])
             });
             if (this.positions.length > 1) {
                 var t = pos.timestamp - this.lastTime;
-                if (t > this.options.threshold) {
+                if (t > this.threshold) {
                     var len = this.positions.length,
                         pos1 = this.positions[len - 2],
                         pos2 = this.positions[len - 1],

@@ -6,7 +6,8 @@ angular.module('gmControllers', [])
         $location.path('/measure');
     };
 })
-.controller('MeasureCtrl', function ($scope, timer) {
+.controller('MeasureCtrl', function ($scope, timer, tracker) {
+    tracker.start();
     timer.start();
     $scope.running = true;
     $scope.speed = 0;
@@ -18,7 +19,12 @@ angular.module('gmControllers', [])
     $scope.toggleState = function () {
         $scope.running = !$scope.running;
         timer.pause();
+        tracker.pause(!$scope.running);
     };
+    $scope.$on('tracker.change', function (event, data) {
+        $scope.speed = data.speed;
+        $scope.dist = data.distance;
+    });
     $scope.$on('$destroy', function () {
         timer.stop();
     });

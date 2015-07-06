@@ -104,42 +104,36 @@ angular.module('gmServices', [])
             if (this.paused) {
                 return;
             }
-            this.positions.push({
-                lt: pos.coords.latitude,
-                ln: pos.coords.longitude,
-                t: pos.timestamp,
-                d: 0,
-                s: 0
-            });
-            if (this.positions.length > 1) {
-                var t = pos.timestamp - this.lastTime;
-                if (t > this.threshold) {
-                    var len = this.positions.length,
-                        pos1 = this.positions[len - 2],
-                        pos2 = this.positions[len - 1],
-                        d = this.calcDistance(pos1, pos2),
-                        speed = d / t;
-                    this.distance += d;
-                    pos2.d = d;
-                    pos2.speed = speed;
-                    $rootScope.$broadcast('tracker.change', {
-                        speed: speed,
-                        distance: tracker.distance,
-                        moved: d
-                    });
-                }
+            var len = this.positions.length;
+            if (len === 0) {
+                this.positions.push(pos);
+                this.lastTime = Date.now();
+                return;
             }
-            this.lastTime = pos.timestamp;
+            var t = pos.timestamp - this.lastTime;
+            if (t > this.threshold) {
+                var prev = this.positions[len-1],
+                    d = Math.round(this.calcDistance(prev.coords, pos.coords)),
+                    speed = Math.round(d / t);
+                this.positions.push(pos);
+                this.lastTime = Date.now();
+                this.distance += d;
+                $rootScope.$broadcast('tracker.change', {
+                    speed: speed,
+                    distance: tracker.distance,
+                    move: d
+                });
+            }
         },
         calcDistance: function (coords1, coords2) {
             var toRad = function (num) {
                     return num * Math.PI / 180.0;
                 },
                 R = 6371,
-                dLat = toRad(coords2.lt - coords1.lt),
-                dLon = toRad(coords2.ln - coords1.ln),
+                dLat = toRad(coords2.latitude - coords1.latitude),
+                dLon = toRad(coords2.longitude - coords1.longitude),
                 a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                    Math.cos(toRad(coords1.lt)) * Math.cos(toRad(coords2.lt)) *
+                    Math.cos(toRad(coords1.latitude)) * Math.cos(toRad(coords2.latitude)) *
                     Math.sin(dLon / 2) * Math.sin(dLon / 2),
                 c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)),
                 d = R * c;

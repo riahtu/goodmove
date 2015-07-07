@@ -90,21 +90,49 @@ angular.module('gmServices', [])
         start: function () {
             this.threshold = 5000;
             this.paused = false;
-            this.positions = [];
+            this.pos = null;
             this.distance = 0;
-            this.lastTime = 0;
         },
         pause: function (paused) {
             this.paused = paused;
-        },
-        stop: function () {
-    
         },
         track: function (pos) {
             if (this.paused) {
                 return;
             }
-            var len = this.positions.length;
+            if (this.pos === null) {
+                this.pos = pos;
+                return;
+            }
+            var t = pos.timestamp - this.pos.timestamp;
+            if (t >= 5000) {
+                var d = this.calcDistance(this.pos.coords, pos.coords),
+                    t = t/1000,
+                    speed = d/t;
+                this.distance += d;
+                $rootScope.$broadcast('tracker.change', {
+                    speed: speed,
+                    distance: tracker.distance,
+                    move: d
+                });
+            }
+            
+            
+            /*if (this.positions.length === 2) {
+                var p1 = this.positions.shift(),
+                    p2 = this.positions.pop(),
+                    d = this.calcDistance(p1.coords, p2.coords), // distance in meters
+                    t = (p2.timestamp - p1.timestamp) / 1000, // time in sec
+                    speed = d/t; // speed in meters per seconds
+                this.distance += d;
+                $rootScope.$broadcast('tracker.change', {
+                    speed: speed,
+                    distance: tracker.distance,
+                    move: d
+                });
+            }*/
+            
+            /*var len = this.positions.length;
             if (len === 0) {
                 this.positions.push(pos);
                 this.lastTime = Date.now();
@@ -113,8 +141,8 @@ angular.module('gmServices', [])
             var t = pos.timestamp - this.lastTime;
             if (t > this.threshold) {
                 var prev = this.positions[len-1],
-                    d = Math.round(this.calcDistance(prev.coords, pos.coords)),
-                    speed = Math.round(d / t);
+                    d = this.calcDistance(prev.coords, pos.coords),
+                    speed = d / t;
                 this.positions.push(pos);
                 this.lastTime = Date.now();
                 this.distance += d;
@@ -123,13 +151,13 @@ angular.module('gmServices', [])
                     distance: tracker.distance,
                     move: d
                 });
-            }
+            }*/
         },
         calcDistance: function (coords1, coords2) {
             var toRad = function (num) {
                     return num * Math.PI / 180.0;
                 },
-                R = 6371,
+                R = 6371000,
                 dLat = toRad(coords2.latitude - coords1.latitude),
                 dLon = toRad(coords2.longitude - coords1.longitude),
                 a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +

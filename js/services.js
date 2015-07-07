@@ -7,6 +7,7 @@ angular.module('gmServices', [])
         timeout: 30000
     },
     isActive = false,
+    startTime = 0,
     watchId = null,
     service = {
         start: function () {
@@ -33,13 +34,21 @@ angular.module('gmServices', [])
         },
         active: function (val) {
             isActive = val;
+            startTime = 0;
             $rootScope.$broadcast('locator.active', isActive);
         },
         isActive: function () {
             return isActive;
         },
         onPosition: function (pos) {
+            if (startTime === 0) {
+                startTime = Date.now();
+                return;
+            }
             if (!isActive) {
+                if ((Date.now() - startTime) < 8000) {
+                    return;
+                }
                 service.active(true);
             }
             $rootScope.$broadcast('locator.pos', pos);

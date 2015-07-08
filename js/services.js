@@ -7,7 +7,6 @@ angular.module('gmServices', [])
         timeout: 30000
     },
     isActive = false,
-    startTime = 0,
     watchId = null,
     service = {
         start: function () {
@@ -34,21 +33,13 @@ angular.module('gmServices', [])
         },
         active: function (val) {
             isActive = val;
-            startTime = 0;
             $rootScope.$broadcast('locator.active', isActive);
         },
         isActive: function () {
             return isActive;
         },
         onPosition: function (pos) {
-            if (startTime === 0) {
-                startTime = Date.now();
-                return;
-            }
             if (!isActive) {
-                if ((Date.now() - startTime) < 8000) {
-                    return;
-                }
                 service.active(true);
             }
             $rootScope.$broadcast('locator.pos', pos);
@@ -83,7 +74,8 @@ angular.module('gmServices', [])
             state = 'stopped';
             id = null;
         },
-        pause: function () {
+        pause: function (paused) {
+            state = paused ? 'paused' : 'started';
             if (state !== 'paused') {
                 clearTimeout(id);
                 state = 'paused';
@@ -97,70 +89,41 @@ angular.module('gmServices', [])
 .service('tracker', function ($rootScope) {
     var tracker = {
         start: function () {
-            this.threshold = 5000;
             this.paused = false;
-            this.pos = null;
+            this.lastPos = null;
             this.distance = 0;
         },
         pause: function (paused) {
             this.paused = paused;
         },
         track: function (pos) {
-            if (this.paused) {
+            var self = this;
+            if (this.paused) { // Tracking paused.
                 return;
             }
-            if (this.pos === null) {
-                this.pos = pos;
+            if (pos.coords.speed == 0) { // No movement.
+                this.lastPos = null;
                 return;
             }
-            var t = pos.timestamp - this.pos.timestamp;
-            if (t >= 5000) {
-                var d = this.calcDistance(this.pos.coords, pos.coords),
-                    t = t/1000,
-                    speed = d/t;
-                this.distance += d;
-                $rootScope.$broadcast('tracker.change', {
-                    speed: speed,
-                    distance: tracker.distance,
-                    move: d
-                });
-            }
-            
-            
-            /*if (this.positions.length === 2) {
-                var p1 = this.positions.shift(),
-                    p2 = this.positions.pop(),
-                    d = this.calcDistance(p1.coords, p2.coords), // distance in meters
-                    t = (p2.timestamp - p1.timestamp) / 1000, // time in sec
-                    speed = d/t; // speed in meters per seconds
-                this.distance += d;
-                $rootScope.$broadcast('tracker.change', {
-                    speed: speed,
-                    distance: tracker.distance,
-                    move: d
-                });
-            }*/
-            
-            /*var len = this.positions.length;
-            if (len === 0) {
-                this.positions.push(pos);
-                this.lastTime = Date.now();
+            if (this.lastPos === null) {
+                $.post('/goodmove/tr.php', {lastPos: pos});
+                this.lastPos = pos;
                 return;
             }
-            var t = pos.timestamp - this.lastTime;
-            if (t > this.threshold) {
-                var prev = this.positions[len-1],
-                    d = this.calcDistance(prev.coords, pos.coords),
-                    speed = d / t;
-                this.positions.push(pos);
-                this.lastTime = Date.now();
-                this.distance += d;
-                $rootScope.$broadcast('tracker.change', {
-                    speed: speed,
-                    distance: tracker.distance,
-                    move: d
-                });
-            }*/
+            var t = (pos.timestamp - this.lastPos.timestamp) / 1000; // time in seconds
+            if (t > 9) {
+                // Stale position - reupdate it.
+                this.lastPos = pos;
+                return;
+            }
+            var d = this.calcDistance(this.lastPos.coords, pos.coords); // distance in meters
+            this.distance += d;
+            this.lastPos = pos;
+            $rootScope.$broadcast('tracker.change', {
+                speed: pos.coords.speed,
+                distance: self.distance,
+                moved: d
+            });
         },
         calcDistance: function (coords1, coords2) {
             var toRad = function (num) {

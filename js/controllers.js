@@ -9,18 +9,31 @@ angular.module('gmControllers', [])
 .controller('MeasureCtrl', function ($scope, timer, tracker) {
     tracker.start();
     timer.start();
-    $scope.running = true;
+    $scope.state = 'running';
     $scope.speed = 0;
     $scope.dist = 0;
     $scope.$on('timer.tick', function (event, ticks) {
         $scope.ticks = ticks;
         $scope.$digest();
     });
+    function switchPause(state) {
+        timer.pause(state);
+        tracker.pause(state);
+    }
     $scope.toggleState = function () {
-        $scope.running = !$scope.running;
-        timer.pause();
-        tracker.pause(!$scope.running);
+        $scope.state = $scope.state == 'running' ? 'paused' : 'running';
+        switchPause($scope.state == 'running');
     };
+    $scope.$on('locator.active', function (event, active) {
+        if (!active) {
+            $scope.state = 'search';
+            switchPause(true);
+        } else {
+            $scope.state = 'running';
+            switchPause(false);
+        }
+        $scope.$digest();
+    });
     $scope.$on('tracker.change', function (event, data) {
         $scope.speed = data.speed;
         $scope.dist = data.distance;

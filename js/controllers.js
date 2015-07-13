@@ -22,7 +22,15 @@ angular.module('gmControllers', [])
         tracker.pause($scope.stopped);
     }
     $scope.toggleState = switchPause;
+    $scope.$on('locator.error', function (event, err) {
+        switchPause(true);
+        $scope.message = err;
+    });
     $scope.$on('locator.active', function (event, active) {
+        if (active) {
+            $scope.message = '';
+            if ($scope.stopped) switchPause(false);
+        }
     });
     $scope.$on('tracker.change', function (event, data) {
         $scope.speed = data.speed.toFixed(2);

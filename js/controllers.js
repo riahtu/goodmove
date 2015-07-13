@@ -35,8 +35,8 @@ angular.module('gmControllers', [])
         $scope.$digest();
     });
     $scope.$on('tracker.change', function (event, data) {
-        $scope.speed = data.speed;
-        $scope.dist = data.distance;
+        $scope.speed = data.speed.toFixed(2);
+        $scope.dist = data.distance.toFixed(2);
     });
     $scope.$on('$destroy', function () {
         timer.stop();

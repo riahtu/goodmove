@@ -102,7 +102,6 @@ angular.module('gmServices', [])
                 return;
             }
             if (this.lastPos === null) {
-                $.post('/goodmove/tr.php', {lastPos: pos});
                 this.lastPos = pos;
                 return;
             }

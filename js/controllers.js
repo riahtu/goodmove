@@ -40,6 +40,7 @@ angular.module('gmControllers', [])
         $scope.dist = data.distance.toFixed(2);
     });
     $scope.$on('$destroy', function () {
-        timer.stop();
+        timer.pause(true);
+        tracker.pause(true);
     });
 });

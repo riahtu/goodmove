@@ -23,17 +23,17 @@
             <h1><span class="glyphicon glyphicon-time"></span> <small class="hidden-xs">Time</small></h1>
         </div>
         <div class="col-xs-10 col-sm-8 col-md-9 col-lg-10 value">
-            <h2>{{ ticks | fmtTime }} <small ng-show="state != 'running'">stopped</small></h2>
+            <h2>{{ ticks | fmtTime }} <small ng-show="stopped">stopped</small></h2>
         </div>
     </div>
     <nav class="navbar navbar-fixed-bottom control-buttons">
         <div class="container-fluid">
-            <div class="row" ng-show="state == 'running'">
+            <div class="row" ng-show="!stopped">
                 <div class="col-md-12">
                     <button class="btn btn-block" ng-click="toggleState()">Stop</button>
                 </div>
             </div>
-            <div class="row" ng-show="state != 'running'">
+            <div class="row" ng-show="stopped">
                 <div class="col-xs-2 col-md-2">
                     <button class="btn btn-block">
                         <span class="glyphicon glyphicon-chevron-left"></span>

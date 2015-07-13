@@ -52,7 +52,7 @@ angular.module('gmServices', [])
     return service;
 })
 .service('timer', function ($rootScope) {
-    var ticks, id, state;
+    var ticks, id, paused;
     function every() {
         id = setTimeout(function () {
             ticks++;
@@ -63,25 +63,21 @@ angular.module('gmServices', [])
     return {
         start: function () {
             ticks = 0;
-            state = 'started';
+            paused = false;
             every();
         },
         getTicks: function () {
             return ticks;
         },
-        stop: function () {
-            clearTimeout(id);
-            state = 'stopped';
-            id = null;
+        isPaused: function () {
+            return paused;
         },
-        pause: function (paused) {
-            state = paused ? 'paused' : 'started';
-            if (state !== 'paused') {
+        pause: function (_paused) {
+            paused = _paused || !paused;
+            if (paused) {
                 clearTimeout(id);
-                state = 'paused';
             } else {
                 every();
-                state = 'started';
             }
         }
     };

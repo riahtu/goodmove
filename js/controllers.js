@@ -6,7 +6,7 @@ angular.module('gmControllers', [])
         $location.path('/measure');
     };
 })
-.controller('MeasureCtrl', function ($scope, timer, tracker) {
+.controller('MeasureCtrl', function ($scope, $location, timer, tracker) {
     tracker.start();
     timer.start();
     $scope.speed = 0;
@@ -22,6 +22,9 @@ angular.module('gmControllers', [])
         tracker.pause($scope.stopped);
     }
     $scope.toggleState = switchPause;
+    $scope.btnBack = function () {
+        $location.path('/');
+    };
     $scope.$on('locator.error', function (event, err) {
         switchPause(true);
         $scope.message = err;

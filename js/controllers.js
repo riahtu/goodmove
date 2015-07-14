@@ -36,8 +36,11 @@ angular.module('gmControllers', [])
         }
     });
     $scope.$on('tracker.change', function (event, data) {
-        $scope.speed = data.speed.toFixed(2);
-        $scope.dist = data.distance.toFixed(2);
+        function val(x) {
+            return isNaN(parseFloat(x)) ? '?' : x.toFixed(2);
+        }
+        $scope.speed = val(data.speed);
+        $scope.dist = val(data.distance);
     });
     $scope.$on('$destroy', function () {
         timer.pause(true);

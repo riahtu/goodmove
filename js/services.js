@@ -93,11 +93,12 @@ angular.module('gmServices', [])
             this.paused = paused;
         },
         track: function (pos) {
-            var self = this;
+            var self = this,
+                speed = pos.coords.speed || null;
             if (this.paused) { // Tracking paused.
                 return;
             }
-            if (pos.coords.speed == 0) { // No movement.
+            if (speed == 0) { // No movement.
                 this.lastPos = null;
                 return;
             }
@@ -115,9 +116,10 @@ angular.module('gmServices', [])
             this.distance += d;
             this.lastPos = pos;
             $rootScope.$broadcast('tracker.change', {
-                speed: pos.coords.speed,
+                speed: speed,
                 distance: self.distance,
-                moved: d
+                moved: d,
+                time: pos.timestamp
             });
         },
         calcDistance: function (coords1, coords2) {

@@ -23,7 +23,7 @@ angular.module('gmControllers', [])
     }
     $scope.toggleState = switchPause;
     $scope.btnBack = function () {
-        $location.path('/');
+        $location.path('/result');
     };
     $scope.$on('locator.error', function (event, err) {
         switchPause(true);
@@ -46,4 +46,7 @@ angular.module('gmControllers', [])
         timer.pause(true);
         tracker.pause(true);
     });
+})
+.controller('ResultCtrl', function () {
+    
 });

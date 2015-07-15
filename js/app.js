@@ -17,6 +17,10 @@
                     templateUrl: 'partial-measure.html',
                     controller: 'MeasureCtrl'
                 })
+                .when('/result', {
+                    templateUrl: 'partial-result.html',
+                    controller: 'ResultCtrl'
+                })
                 .otherwise({
                     redirectTo: '/main'
                 });

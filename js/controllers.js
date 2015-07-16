@@ -7,11 +7,14 @@ angular.module('gmControllers', [])
     };
 })
 .controller('MeasureCtrl', function ($scope, $location, timer, tracker) {
-    tracker.start();
-    timer.start();
-    $scope.speed = 0;
-    $scope.dist = 0;
-    $scope.stopped = false;
+    function reset() {
+        $scope.speed = 0;
+        $scope.dist = 0;
+        $scope.stopped = false;
+        tracker.start();
+        timer.start();
+    }
+    reset();
     $scope.$on('timer.tick', function (event, ticks) {
         $scope.ticks = ticks;
         $scope.$digest();
@@ -22,6 +25,7 @@ angular.module('gmControllers', [])
         tracker.pause($scope.stopped);
     }
     $scope.toggleState = switchPause;
+    $scope.reset = reset;
     $scope.btnBack = function () {
         $location.path('/result');
     };

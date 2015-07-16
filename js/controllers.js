@@ -2,9 +2,6 @@
 angular.module('gmControllers', [])
 .controller('MainCtrl', function ($scope, $location, locator) {
     locator.start();
-    $scope.toMeasure = function () {
-        $location.path('/measure');
-    };
 })
 .controller('MeasureCtrl', function ($scope, $location, timer, tracker) {
     function reset() {
@@ -26,9 +23,6 @@ angular.module('gmControllers', [])
     }
     $scope.toggleState = switchPause;
     $scope.reset = reset;
-    $scope.btnBack = function () {
-        $location.path('/result');
-    };
     $scope.$on('locator.error', function (event, err) {
         switchPause(true);
         $scope.message = err;

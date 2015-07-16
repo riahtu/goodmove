@@ -17,4 +17,16 @@ angular.module('gmDirectives', [])
             });
         }
     };
+})
+.directive('gmView', function ($location) {
+    return {
+        //restrict: 'A',
+        link: function (scope, element, attrs) {
+            element.bind('click', function () {
+                scope.$apply(function () {
+                    $location.path('/' + attrs.gmView);
+                });
+            });
+        }
+    };
 });

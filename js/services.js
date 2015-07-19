@@ -64,6 +64,7 @@ angular.module('gmServices', [])
         start: function () {
             ticks = 0;
             paused = false;
+            if (id !== null) clearTimeout(id);
             every();
         },
         getTicks: function () {
@@ -73,10 +74,11 @@ angular.module('gmServices', [])
             return paused;
         },
         pause: function (_paused) {
-            paused = _paused || !paused;
+            paused = (typeof _paused === 'boolean') ? _paused : !paused;
             if (paused) {
                 clearTimeout(id);
-            } else {
+                id = null;
+            } else if (id === null) {
                 every();
             }
         }
@@ -88,6 +90,9 @@ angular.module('gmServices', [])
             this.paused = false;
             this.lastPos = null;
             this.distance = 0;
+            $rootScope.$on('locator.pos', function (ev, pos) {
+                tracker.track(pos);
+            });
         },
         pause: function (paused) {
             this.paused = paused;
@@ -137,8 +142,36 @@ angular.module('gmServices', [])
             return d;
         }
     };
-    $rootScope.$on('locator.pos', function (ev, pos) {
-        tracker.track(pos);
-    });
     return tracker;
+})
+.service('pulse', function (timer, tracker) {
+    var pulse;
+    pulse = {
+        state: null,
+        start: function () {
+            if (!this.state) {
+                timer.start();
+                tracker.start();
+                this.state = {
+                    speed: 0,
+                    dist: 0,
+                    ticks: 0,
+                    paused: false
+                };
+            }
+            return this;
+        },
+        reset: function () {
+            this.state = null;
+            return this;
+        },
+        pause: function (paused) {
+            paused = (typeof paused === 'boolean') ? paused : !this.state.paused;
+            timer.pause(paused);
+            tracker.pause(paused);
+            this.state.paused = paused;
+            return this;
+        }
+    };
+    return pulse;
 });

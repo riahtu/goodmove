@@ -7,7 +7,7 @@
             <h1><span class="glyphicon glyphicon-dashboard"></span> <small class="hidden-xs">Speed</small></h1>
         </div>
         <div class="col-xs-10 col-sm-8 col-md-9 col-lg-10 value">
-            <h2>{{speed}} <small>m/s</small></h2>
+            <h2>{{state.speed}} <small>m/s</small></h2>
         </div>
     </div>
     <div class="row row-dist">
@@ -15,7 +15,7 @@
             <h1><span class="glyphicon glyphicon-road"></span> <small class="hidden-xs">Distance</small></h1>
         </div>
         <div class="col-xs-10 col-sm-8 col-md-9 col-lg-10 value">
-            <h2>{{dist}} <small>m</small></h2>
+            <h2>{{state.dist}} <small>m</small></h2>
         </div>
     </div>
     <div class="row row-time">
@@ -23,17 +23,17 @@
             <h1><span class="glyphicon glyphicon-time"></span> <small class="hidden-xs">Time</small></h1>
         </div>
         <div class="col-xs-10 col-sm-8 col-md-9 col-lg-10 value">
-            <h2>{{ ticks | fmtTime }} <small ng-show="stopped">stopped</small></h2>
+            <h2>{{ state.ticks | fmtTime }} <small ng-show="state.paused">stopped</small></h2>
         </div>
     </div>
     <nav class="navbar navbar-fixed-bottom control-buttons">
         <div class="container-fluid">
-            <div class="row" ng-show="!stopped">
+            <div class="row" ng-show="!state.paused">
                 <div class="col-md-12">
-                    <button class="btn btn-block btn-lg" ng-click="toggleState()">Stop</button>
+                    <button class="btn btn-block btn-lg" ng-click="togglePause()">Stop</button>
                 </div>
             </div>
-            <div class="row" ng-show="stopped">
+            <div class="row" ng-show="state.paused">
                 <div class="col-xs-2 col-md-2">
                     <button class="btn btn-block btn-lg" gm-view="result">
                         <span class="glyphicon glyphicon-chevron-left"></span>
@@ -47,7 +47,7 @@
                     </button>
                 </div>
                 <div class="col-xs-8 col-md-8">
-                    <button class="btn btn-block btn-lg" ng-click="toggleState()">Continue</button>
+                    <button class="btn btn-block btn-lg" ng-click="togglePause()">Continue</button>
                 </div>
             </div>
         </div>

@@ -22,9 +22,16 @@ angular.module('gmDirectives', [])
     return {
         //restrict: 'A',
         link: function (scope, element, attrs) {
+            var spec = attrs.gmView.split('?'), params = {};
             element.bind('click', function () {
                 scope.$apply(function () {
-                    $location.path('/' + attrs.gmView);
+                    if (spec.length > 1) {
+                        for (var i = 1; i < spec.length; i++) {
+                            var p = spec[i].split('=');
+                            params[p[0]] = p[1] || true;
+                        }
+                    }
+                    $location.path('/' + spec[0]).search(params);
                 });
             });
         }

@@ -1,50 +1,42 @@
 
 angular.module('gmControllers', [])
-.controller('MainCtrl', function ($scope, $location, locator) {
+.controller('MainCtrl', function (locator, pulse) {
     locator.start();
+    pulse.reset();
 })
-.controller('MeasureCtrl', function ($scope, $location, timer, tracker) {
-    function reset() {
-        $scope.speed = 0;
-        $scope.dist = 0;
-        $scope.stopped = false;
-        tracker.start();
-        timer.start();
-    }
-    reset();
-    $scope.$on('timer.tick', function (event, ticks) {
-        $scope.ticks = ticks;
-        $scope.$digest();
-    });
-    function switchPause(state) {
-        timer.pause(state);
-        $scope.stopped = timer.isPaused();
-        tracker.pause($scope.stopped);
-    }
-    $scope.toggleState = switchPause;
-    $scope.reset = reset;
+.controller('MeasureCtrl', function ($scope, pulse) {
+    pulse.start().pause(false);
+    $scope.state = pulse.state;
+    $scope.togglePause = pulse.pause;
+    $scope.reset = function () {
+        pulse.reset().start();
+        $scope.state = pulse.state;
+    };
     $scope.$on('locator.error', function (event, err) {
-        switchPause(true);
+        pulse.pause(true);
         $scope.message = err;
+    });
+    $scope.$on('timer.tick', function (event, ticks) {
+        $scope.state.ticks = ticks;
+        $scope.$digest();
     });
     $scope.$on('locator.active', function (event, active) {
         if (active) {
             $scope.message = '';
-            if ($scope.stopped) switchPause(false);
+            if ($scope.state.paused) pulse.pause(false);
         }
     });
     $scope.$on('tracker.change', function (event, data) {
         function val(x) {
             return isNaN(parseFloat(x)) ? '?' : x.toFixed(2);
         }
-        $scope.speed = val(data.speed);
-        $scope.dist = val(data.distance);
+        $scope.state.speed = val(data.speed);
+        $scope.state.dist = val(data.distance);
     });
     $scope.$on('$destroy', function () {
-        timer.pause(true);
-        tracker.pause(true);
+        pulse.pause(true);
     });
 })
-.controller('ResultCtrl', function () {
-    
+.controller('ResultCtrl', function ($scope, pulse) {
+    pulse.pause(true);
 });

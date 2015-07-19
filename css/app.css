@@ -1,0 +1,41 @@
+/* 
+    Document   : app
+    Created on : 19 лип 2015, 23:06:24
+    Author     : skoro
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+root { 
+    display: block;
+}
+.center-text {
+    text-align: center;
+}
+.time-line {
+}
+.mark-circle {
+    background-color: darkgray;
+    border-radius: 100%;
+    width: 50px;
+    height: 50px;
+}
+.mark-line {
+    clear: both;
+    width: 100%;
+    border: 1px dotted darkgrey;
+    position: relative;
+    top: 25px;
+}
+.mark-time {
+    font-size: 125%;
+}
+.mark-total-time {
+    clear: both;
+    position: relative;
+    top: -40px;
+}
+.mark-dist {
+    position: relative;
+    top: 20px;
+}

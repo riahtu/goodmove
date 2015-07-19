@@ -166,10 +166,12 @@ angular.module('gmServices', [])
             return this;
         },
         pause: function (paused) {
-            paused = (typeof paused === 'boolean') ? paused : !this.state.paused;
-            timer.pause(paused);
-            tracker.pause(paused);
-            this.state.paused = paused;
+            if (this.state) {
+                paused = (typeof paused === 'boolean') ? paused : !this.state.paused;
+                timer.pause(paused);
+                tracker.pause(paused);
+                this.state.paused = paused;
+            }
             return this;
         }
     };

@@ -39,4 +39,12 @@ angular.module('gmControllers', [])
 })
 .controller('ResultCtrl', function ($scope, pulse) {
     pulse.pause(true);
+    $scope.state = pulse.state;
+    var dist = pulse.state.dist/1000;
+    if (dist > 0) {
+        var km = Math.floor(dist);
+        $scope.dist = { km: km, m: Math.floor((dist - km)*1000) };
+    } else {
+        $scope.dist = { km: 0, m: pulse.state.dist | 0 };
+    }
 });

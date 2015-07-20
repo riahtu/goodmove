@@ -156,7 +156,8 @@ angular.module('gmServices', [])
                     speed: 0,
                     dist: 0,
                     ticks: 0,
-                    paused: false
+                    paused: false,
+                    startTime: Date.now()
                 };
             }
             return this;
@@ -171,6 +172,7 @@ angular.module('gmServices', [])
                 timer.pause(paused);
                 tracker.pause(paused);
                 this.state.paused = paused;
+                this.state.finishTime = Date.now();
             }
             return this;
         }

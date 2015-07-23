@@ -15,7 +15,7 @@
             <div class="mark-time" ng-bind="state.finishTime | date:'HH:mm'"></div>
         </div>
         <div class="mark-total-time center-text">
-            <h1>2h <small>04 min</small></h1>
+            <h1><span ng-show="time.h > 0">{{time.h}}h</span> <small>{{time.m}} min</small></h1>
         </div>
     </div>
     <nav class="navbar navbar-fixed-bottom control-buttons">

@@ -47,4 +47,6 @@ angular.module('gmControllers', [])
     } else {
         $scope.dist = { km: 0, m: pulse.state.dist | 0 };
     }
+    var time = pulse.state.ticks;
+    $scope.time = { h: (time / 3600) | 0, m: ((time / 60) | 0) % 60 };
 });

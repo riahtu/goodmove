@@ -30,7 +30,11 @@ angular.module('gmControllers', [])
         function val(x) {
             return isNaN(parseFloat(x)) ? '?' : x.toFixed(2);
         }
-        $scope.state.speed = val(data.speed);
+        var speed = val(data.speed);
+        if (speed !== '?') {
+            pulse.addSpeed(data.speed); // Collect raw speed value.
+        }
+        $scope.state.speed = speed;
         $scope.state.dist = val(data.distance);
     });
     $scope.$on('$destroy', function () {
@@ -40,6 +44,7 @@ angular.module('gmControllers', [])
 .controller('ResultCtrl', function ($scope, pulse) {
     pulse.pause(true);
     $scope.state = pulse.state;
+    $scope.speed = pulse.avgSpeed();
     var dist = pulse.state.dist/1000;
     if (dist > 0) {
         var km = Math.floor(dist);

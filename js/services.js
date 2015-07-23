@@ -157,7 +157,8 @@ angular.module('gmServices', [])
                     dist: 0,
                     ticks: 0,
                     paused: false,
-                    startTime: Date.now()
+                    startTime: Date.now(),
+                    speedStat: { sum: 0, cnt: 0}
                 };
             }
             return this;
@@ -175,6 +176,15 @@ angular.module('gmServices', [])
                 this.state.finishTime = Date.now();
             }
             return this;
+        },
+        addSpeed: function (speed) {
+            this.state.speedStat.sum += speed;
+            this.state.speedStat.cnt++;
+            return this;
+        },
+        avgSpeed: function () {
+            var avg = this.state.speedStat.sum/this.state.speedStat.cnt;
+            return isNaN(avg) ? 0 : avg;
         }
     };
     return pulse;
